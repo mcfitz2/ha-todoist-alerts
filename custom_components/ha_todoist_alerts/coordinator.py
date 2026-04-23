@@ -170,7 +170,7 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if alert.get("due_string"):
             payload["due_string"] = alert["due_string"]
 
-        _LOGGER.info("Creating Todoist task with payload: %s", payload)
+        _LOGGER.warning("Creating Todoist task with payload: %s", payload)
 
         session = async_get_clientsession(self.hass)
         async with session.post(
@@ -185,7 +185,7 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
                 resp.raise_for_status()
             data = await resp.json()
-            _LOGGER.info("Todoist task created: %s", data)
+            _LOGGER.warning("Todoist task created: %s", data)
             return data["id"]
 
     async def _api_close_task(self, task_id: str) -> None:
@@ -232,15 +232,15 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Create alert and Todoist task if not already active. Returns task_id or None."""
         existing = self.alerts.get(name, {})
         existing_task_id = existing.get("task_id")
-        _LOGGER.info("create_alert '%s': existing_task_id=%s", name, existing_task_id)
+        _LOGGER.warning("create_alert '%s': existing_task_id=%s", name, existing_task_id)
 
         # Check if existing task is still open
         if existing_task_id:
             task = await self._api_get_task(existing_task_id)
             if task:
-                _LOGGER.info("Alert '%s' already has open task %s, skipping", name, existing_task_id)
+                _LOGGER.warning("Alert '%s' already has open task %s, skipping", name, existing_task_id)
                 return existing_task_id
-            _LOGGER.info("Alert '%s' task %s is completed/gone, will create new", name, existing_task_id)
+            _LOGGER.warning("Alert '%s' task %s is completed/gone, will create new", name, existing_task_id)
 
         # Clear any pending recreate since we're explicitly creating now
         alert_config: dict[str, Any] = {
@@ -261,7 +261,7 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if snooze_until:
             snooze_dt = dt_util.parse_datetime(snooze_until)
             if snooze_dt and dt_util.utcnow() < snooze_dt:
-                _LOGGER.info("Alert '%s' is snoozed until %s, skipping task creation", name, snooze_until)
+                _LOGGER.warning("Alert '%s' is snoozed until %s, skipping task creation", name, snooze_until)
                 self.alerts[name] = alert_config
                 await self._async_save()
                 return None
@@ -277,7 +277,7 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.alerts[name] = alert_config
         await self._async_save()
 
-        _LOGGER.info("Created Todoist task %s for alert '%s'", task_id, name)
+        _LOGGER.warning("Created Todoist task %s for alert '%s'", task_id, name)
         return task_id
 
     async def async_resolve_alert(self, name: str) -> None:
