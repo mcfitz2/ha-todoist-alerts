@@ -3,7 +3,7 @@
   "name": "Todoist Alerts",
   "version": "1.0.0",
   "config_flow": true,
-  "documentation": "https://github.com/micah/eventing",
+  "documentation": "https://github.com/mcfitz2/ha-todoist-alerts",
   "requirements": [],
   "dependencies": [],
   "codeowners": [],
