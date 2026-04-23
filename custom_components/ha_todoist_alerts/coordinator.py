@@ -144,6 +144,7 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
             if resp.status == 200:
                 data = await resp.json()
+                _LOGGER.warning("_api_get_task %s response: checked=%s is_completed=%s", task_id, data.get("checked"), data.get("is_completed"))
                 # API v1 uses "checked" (not "is_completed") for completed tasks
                 if data.get("checked") or data.get("is_completed"):
                     return None
