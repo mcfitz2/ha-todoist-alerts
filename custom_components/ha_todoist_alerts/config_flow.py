@@ -1,11 +1,15 @@
 """Config flow for Todoist Alerts."""
 from __future__ import annotations
 
+import logging
+
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import CONF_API_TOKEN, CONF_DEFAULT_PROJECT_ID, DOMAIN, TODOIST_API_BASE
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class TodoistAlertsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -45,10 +49,16 @@ class TodoistAlertsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _validate_token(self, token: str) -> bool:
         session = async_get_clientsession(self.hass)
         try:
-            resp = await session.get(
+            async with session.get(
                 f"{TODOIST_API_BASE}/projects",
                 headers={"Authorization": f"Bearer {token}"},
-            )
-            return resp.status == 200
-        except Exception:
+            ) as resp:
+                if resp.status == 200:
+                    return True
+                _LOGGER.warning(
+                    "Todoist token validation failed: HTTP %s", resp.status
+                )
+                return False
+        except Exception as err:
+            _LOGGER.warning("Todoist token validation error: %s", err)
             return False
