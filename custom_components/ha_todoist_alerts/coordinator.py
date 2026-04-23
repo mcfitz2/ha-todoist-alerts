@@ -144,7 +144,8 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
             if resp.status == 200:
                 data = await resp.json()
-                if data.get("is_completed"):
+                # API v1 uses "checked" (not "is_completed") for completed tasks
+                if data.get("checked") or data.get("is_completed"):
                     return None
                 return data
             if resp.status == 404:
