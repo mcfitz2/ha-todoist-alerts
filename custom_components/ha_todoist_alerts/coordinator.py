@@ -131,7 +131,11 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         }
 
     async def _api_get_task(self, task_id: str) -> dict | None:
-        """Return task dict if open, None if completed/missing."""
+        """Return task dict if open, None if completed or missing.
+
+        API v1 returns 200 with is_completed=true for completed tasks rather
+        than 404, so we explicitly check the flag.
+        """
         session = async_get_clientsession(self.hass)
         try:
             resp = await session.get(
@@ -139,7 +143,10 @@ class TodoistCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 headers=self._headers(),
             )
             if resp.status == 200:
-                return await resp.json()
+                data = await resp.json()
+                if data.get("is_completed"):
+                    return None
+                return data
             if resp.status == 404:
                 return None
             _LOGGER.warning("Unexpected status %s fetching task %s", resp.status, task_id)
