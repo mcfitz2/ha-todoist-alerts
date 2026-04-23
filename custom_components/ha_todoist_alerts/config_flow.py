@@ -50,7 +50,7 @@ class TodoistAlertsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         session = async_get_clientsession(self.hass)
         try:
             async with session.get(
-                f"{TODOIST_API_BASE}/projects",
+                f"{TODOIST_API_BASE}/tasks",
                 headers={"Authorization": f"Bearer {token}"},
             ) as resp:
                 if resp.status == 200:

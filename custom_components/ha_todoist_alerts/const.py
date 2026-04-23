@@ -5,7 +5,7 @@ DOMAIN = "ha_todoist_alerts"
 CONF_API_TOKEN = "api_token"
 CONF_DEFAULT_PROJECT_ID = "default_project_id"
 
-TODOIST_API_BASE = "https://api.todoist.com/rest/v2"
+TODOIST_API_BASE = "https://api.todoist.com/api/v1"
 
 ALERT_STATE_ACTIVE = "active"
 ALERT_STATE_INACTIVE = "inactive"
