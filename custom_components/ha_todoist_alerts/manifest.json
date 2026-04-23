@@ -1,0 +1,12 @@
+{
+  "domain": "ha_todoist_alerts",
+  "name": "Todoist Alerts",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/micah/eventing",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [],
+  "iot_class": "cloud_polling",
+  "integration_type": "service"
+}

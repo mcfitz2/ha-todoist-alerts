@@ -1,0 +1,98 @@
+create_alert:
+  name: Create Alert
+  description: >
+    Create a Todoist task for the given alert name. Idempotent — if an open
+    task already exists for this name, no duplicate is created.
+  fields:
+    name:
+      name: Alert Name
+      description: Unique name for this alert (used as dedup key).
+      required: true
+      example: "Washing machine done"
+      selector:
+        text:
+    content:
+      name: Task Content
+      description: Todoist task title.
+      required: true
+      example: "Collect the washing"
+      selector:
+        text:
+    description:
+      name: Task Description
+      description: Optional Todoist task description/notes.
+      selector:
+        text:
+          multiline: true
+    project_id:
+      name: Project ID
+      description: Todoist project ID. Falls back to the configured default if omitted.
+      selector:
+        text:
+    priority:
+      name: Priority
+      description: "Todoist priority: 1 = normal, 2 = medium, 3 = high, 4 = urgent."
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 4
+          mode: box
+    labels:
+      name: Labels
+      description: List of Todoist label names to apply.
+      selector:
+        object:
+    due_string:
+      name: Due Date
+      description: Natural-language due date, e.g. "today", "tomorrow", "next Monday".
+      selector:
+        text:
+    recreate_delay_minutes:
+      name: Recreate Delay (minutes)
+      description: >
+        If the task is completed in Todoist externally (without calling
+        resolve_alert), recreate it after this many minutes. Set to 0 to
+        disable auto-recreation.
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 10080
+          mode: box
+
+resolve_alert:
+  name: Resolve Alert
+  description: >
+    Close the Todoist task for this alert and remove the alert entirely.
+    Call this when the underlying condition has cleared.
+  fields:
+    name:
+      name: Alert Name
+      description: Name of the alert to resolve.
+      required: true
+      selector:
+        text:
+
+snooze_alert:
+  name: Snooze Alert
+  description: >
+    Close the Todoist task and suppress recreation for the given duration.
+    After the snooze expires, the alert becomes inactive — a new create_alert
+    call is required to reactivate it.
+  fields:
+    name:
+      name: Alert Name
+      description: Name of the alert to snooze.
+      required: true
+      selector:
+        text:
+    duration_minutes:
+      name: Duration (minutes)
+      description: How long to suppress task recreation.
+      default: 60
+      selector:
+        number:
+          min: 1
+          max: 10080
+          mode: box

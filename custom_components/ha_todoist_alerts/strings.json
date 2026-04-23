@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Todoist",
+        "description": "Enter your Todoist API token. Find it at https://app.todoist.com/app/settings/integrations/developer",
+        "data": {
+          "api_token": "API Token",
+          "default_project_id": "Default Project ID (optional)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API token — verify it in your Todoist account settings"
+    },
+    "abort": {
+      "already_configured": "Todoist Alerts is already configured"
+    }
+  }
+}
